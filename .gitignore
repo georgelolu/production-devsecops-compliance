@@ -1,0 +1,58 @@
+# Terraform local files and sensitive artifacts
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+crash.*.log
+
+# Local backups
+*.bak
+*.backup
+*.aws-backup
+main.tf.backup-*
+
+# Local environment configuration
+.env
+.env.*
+!.env.example
+
+# Terraform local state and plans
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+
+# Additional Terraform local artifacts
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Credentials and private keys
+*.pem
+*.key
+*.pfx
+*.p12
+*.credentials
+
+# Local backups and temporary files
+*.bak
+*.backup
+*.aws-backup
+*.before-*
+*.tmp
+
+# Logs and local runtime artifacts
+logs/*
+!logs/.gitkeep
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+infra/foundation/main.tf.pre-backend
