@@ -121,7 +121,7 @@ jobs:
       - name: Test release policy
         run: |
           docker run --rm \
-            -v "$PWD:/workspace" \
+            -v "$GITHUB_WORKSPACE:/workspace" \
             -w /workspace \
             openpolicyagent/opa:1.10.0 \
             test policies -v
