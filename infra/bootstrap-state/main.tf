@@ -36,10 +36,9 @@ resource "azurerm_resource_group" "state" {
 }
 
 resource "azurerm_storage_account" "state" {
-  name                = "proddevsecopsstate01"
-  resource_group_name = azurerm_resource_group.state.name
-  location            = azurerm_resource_group.state.location
-
+  name                     = "proddevsecopsstate01"
+  resource_group_name      = azurerm_resource_group.state.name
+  location                 = azurerm_resource_group.state.location
   account_tier             = "Standard"
   account_kind             = "StorageV2"
   account_replication_type = "ZRS"
@@ -75,6 +74,18 @@ resource "azurerm_storage_account" "state" {
 
   lifecycle {
     prevent_destroy = true
+  }
+}
+
+resource "azurerm_storage_account_queue_properties" "state_logging" {
+  storage_account_id = azurerm_storage_account.state.id
+
+  logging {
+    delete                = true
+    read                  = true
+    write                 = true
+    version               = "1.0"
+    retention_policy_days = 30
   }
 }
 
