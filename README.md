@@ -495,3 +495,13 @@ Cloud & DevOps Engineer | Platform Engineering | DevSecOps
 ---
 
 *This is an engineering portfolio project. It demonstrates security architecture and implementation practices in an Azure lab environment; it is not a certification of regulatory compliance or a claim that the environment has undergone an independent production security audit.*
+
+
+## Project documentation and evidence
+
+- [Azure enterprise security architecture](docs/architecture/azure-enterprise-security-architecture.md)
+- [CI/CD security pipeline architecture](docs/architecture/cicd-security-pipeline-architecture.md)
+- [Project evidence and verification guide](docs/evidence/README.md)
+- [Repeatable evidence collection script](scripts/collect-evidence.sh)
+
+The evidence guide explains how to collect timestamped local reports, verify Azure controls, capture GitHub Actions results, and safely curate artifacts for public review. Generated raw reports are intentionally ignored by Git until reviewed and sanitized.
