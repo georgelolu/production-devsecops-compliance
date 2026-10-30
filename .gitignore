@@ -56,3 +56,6 @@ venv/
 .pytest_cache/
 .coverage
 infra/foundation/main.tf.pre-backend
+
+# Generated evidence reports (review locally before publishing)
+docs/evidence/generated/
