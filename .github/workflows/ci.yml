@@ -125,3 +125,66 @@ jobs:
             -w /workspace \
             openpolicyagent/opa:1.10.0 \
             test policies -v
+  release-policy-gate:
+    name: OPA Release Decision
+    runs-on: ubuntu-latest
+    needs:
+      - application-security
+      - container-security
+      - terraform-validation
+    if: always()
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Build release-policy input from CI results
+        env:
+          APPLICATION_RESULT: ${{ needs.application-security.result }}
+          CONTAINER_RESULT: ${{ needs.container-security.result }}
+          TERRAFORM_RESULT: ${{ needs.terraform-validation.result }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+
+          application_passed = os.environ["APPLICATION_RESULT"] == "success"
+          container_passed = os.environ["CONTAINER_RESULT"] == "success"
+          terraform_passed = os.environ["TERRAFORM_RESULT"] == "success"
+
+          policy_input = {
+              "tests_passed": application_passed,
+              "sast_passed": application_passed,
+              "dependencies_passed": application_passed,
+              "secrets_passed": container_passed,
+              "container_passed": container_passed,
+              "iac_passed": terraform_passed,
+              "policy_tests_passed": terraform_passed,
+          }
+
+          with open("release-input.json", "w", encoding="utf-8") as file:
+              json.dump(policy_input, file, indent=2)
+
+          print(json.dumps(policy_input, indent=2))
+          PY
+
+      - name: Evaluate OPA release decision
+        run: |
+          decision="$(docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -w /workspace \
+            openpolicyagent/opa:1.10.0 \
+            eval \
+            --data policies \
+            --input release-input.json \
+            --format raw \
+            'data.devsecops.release.allow')"
+
+          echo "OPA release decision: $decision"
+
+          if [ "$decision" != "true" ]; then
+            echo "Release denied: one or more required CI controls failed."
+            exit 1
+          fi
+
+          echo "Release policy approved."
